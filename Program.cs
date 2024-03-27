@@ -108,8 +108,30 @@ class Program
                     personaControl.LeerPersonas();
                     break;
                 case "3":
+                    Console.WriteLine("Ingrese el ID de la persona que desea actualizar:");
+                    int idActualizar = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Ingrese el nuevo nombre de la persona:");
+                    string nuevoNombre = Console.ReadLine();
+                    Console.WriteLine("Ingrese el nuevo apellido de la persona:");
+                    string nuevoApellido = Console.ReadLine();
+                    Console.WriteLine("Ingrese el nuevo año de nacimiento de la persona:");
+                    DateTime nuevoAnioNacimiento = Convert.ToDateTime(Console.ReadLine());
+                    Console.WriteLine("Ingrese el nuevo número de identificación de la persona:");
+                    string nuevoNumeroIdentificacion = Console.ReadLine();
+                    Console.WriteLine("Ingrese el nuevo contacto de la persona:");
+                    string nuevoContacto = Console.ReadLine();
+
+                    Persona personaActualizar = new Persona();
+                    personaActualizar.setNombres(nuevoNombre);
+                    personaActualizar.setApellidos(nuevoApellido);
+                    personaActualizar.setAnioNacimiento(nuevoAnioNacimiento);
+                    personaActualizar.setNumeroIdentificacion(nuevoNumeroIdentificacion);
+                    personaActualizar.setContacto(nuevoContacto);
+                    personaControl.ActualizarPersona(personaActualizar, idActualizar);
+                    break;
+                case "4":
                     return;
-            }
+                    }
         }
     }    
 

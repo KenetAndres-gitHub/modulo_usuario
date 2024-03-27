@@ -59,4 +59,28 @@ public class PersonaControlador
             Console.WriteLine($"Error al leer las personas: {ex.Message}");
         }
     }
+
+    public void ActualizarPersona(Persona persona, int idPersona)
+    {
+        try
+        {
+            MySqlConnection connection = conexion.CrearConexion();
+            connection.Open();
+            string query = "UPDATE persona SET Nombres = @Nombres, Apellidos = @Apellidos, AnioNacimiento = @AnioNacimiento, NumeroIdentificacion = @NumeroIdentificacion, Contacto = @Contacto WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Nombres", persona.getNombres());
+            command.Parameters.AddWithValue("@Apellidos", persona.getApellidos());
+            command.Parameters.AddWithValue("@AnioNacimiento", persona.getAnioNacimiento());
+            command.Parameters.AddWithValue("@NumeroIdentificacion", persona.getNumeroIdentificacion());
+            command.Parameters.AddWithValue("@Contacto", persona.getContacto());
+            command.Parameters.AddWithValue("@id", idPersona);
+            command.ExecuteNonQuery();
+            Console.WriteLine($"Persona actualizada: {persona.getNombres()} {persona.getApellidos()}");
+            connection.Close();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al actualizar la persona: {ex.Message}");
+        }
+    }
 }
