@@ -9,7 +9,7 @@ public class Persona
     public string apellidos { get; set; }
     public DateTime anioNacimiento { get; set; }
     public string numeroIdentificacion { get; set; }
-    public string contacto { get; set; }
+    public int contacto { get; set; }
 
     public int getId(){
         return this.id;
@@ -45,10 +45,10 @@ public class Persona
         return this.numeroIdentificacion;
     }
     //Funcion para setear el contacto de la persona
-    public void setContacto(string contacto){
+    public void setContacto(int contacto){
         this.contacto = contacto;
     }
-    public string getContacto(){
+    public int getContacto(){
         return this.contacto;
     }
     
