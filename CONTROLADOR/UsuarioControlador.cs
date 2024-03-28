@@ -79,17 +79,40 @@ public class UsuarioControlador
             //Reservas
         }       
     }
+    public Usuario buscarUsuario(int idUsuario)
+    {
+        try
+        {
+            MySqlConnection connection = conexion.CrearConexion();
+            connection.Open();
+            string query = "SELECT * FROM usuario WHERE Id = @Id";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Id", idUsuario);
+            MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+            Usuario usuario = new Usuario();
+            usuario.setUsuario(reader.GetString(1));
+            usuario.setIdPersona(reader.GetInt32(2));
+            usuario.setIdRol(reader.GetInt32(3));
+            reader.Close();
+            connection.Close();
+            return usuario;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al buscar el usuario: {ex.Message}");
+            return null;
+        }
+    }
     public void ActualizarUsuario(Usuario usuario, int idUsuario)
     {
         try
         {
             MySqlConnection connection = conexion.CrearConexion();
             connection.Open();
-            string query = "UPDATE usuario SET Usuario = @Usuario, IdPersona = @IdPersona, IdRol = @IdRol WHERE Id = @Id";
+            string query = "UPDATE usuario SET Usuario = @Usuario WHERE Id = @Id";
             MySqlCommand command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@Usuario", usuario.getUsuario());
-            command.Parameters.AddWithValue("@IdPersona", usuario.getIdPersona());
-            command.Parameters.AddWithValue("@IdRol", usuario.getIdRol());
             command.Parameters.AddWithValue("@Id", idUsuario);
             command.ExecuteNonQuery();
             Console.WriteLine($"Usuario actualizado: {usuario.getUsuario()}");
@@ -110,7 +133,7 @@ public class UsuarioControlador
             MySqlCommand command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@Id", idUsuario);
             command.ExecuteNonQuery();
-            Console.WriteLine($"Usuario eliminado: {idUsuario}");
+            Console.WriteLine($"Usuario eliminado con Id: {idUsuario}");
             connection.Close();
         }
         catch (Exception ex)

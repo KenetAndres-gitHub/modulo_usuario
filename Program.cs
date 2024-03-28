@@ -140,6 +140,7 @@ class Program
             Console.Write("Ingrese el número de la opción deseada: ");
 
             string opcion = Console.ReadLine();
+            PersonaControlador personaControl = new PersonaControlador();
 
             switch (opcion)
             {
@@ -147,7 +148,6 @@ class Program
                     Console.WriteLine("Ingrese el username:");
                     string usuario = Console.ReadLine();
                     //Creacion de la persona
-                    PersonaControlador personaControl = new PersonaControlador();
                     Console.WriteLine("Ingrese el nombre de la persona del nuevo usuario:");
                     string nombres = Console.ReadLine();
                     Console.WriteLine("Ingrese el apellido de la persona del nuevo usuario:");
@@ -194,24 +194,60 @@ class Program
                     //Sin Probar
                     Console.WriteLine("Ingrese el ID del usuario que desea actualizar:");
                     int idActualizar = Convert.ToInt32(Console.ReadLine());
+                    //Buscar el usuario
+                    Usuario usuarioBuscado = usuarioControl.buscarUsuario(idActualizar);
+                    //Buscar la persona
+                    Persona personaBuscada = personaControl.buscarPersona(usuarioBuscado.getIdPersona());
+                    Console.WriteLine("Dejar vacío en caso de no se quiera cambiar un dato");
+                   
                     Console.WriteLine("Ingrese el nuevo username del usuario:");
                     string nuevoUsuario = Console.ReadLine();
-                    Console.WriteLine("Ingrese el nuevo ID de la persona del usuario:");
-                    int nuevoIdPersona = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("Ingrese el nuevo ID del rol del usuario:");
-                    int nuevoIdRol = Convert.ToInt32(Console.ReadLine());
+                    nuevoUsuario = nuevoUsuario == "" ? usuarioBuscado.getUsuario() : nuevoUsuario;
+                   
+                    Console.WriteLine("Ingrese los nuevos Nombres de la persona:");
+                    string nuevosNombres = Console.ReadLine();
+                    nuevosNombres = nuevosNombres == "" ? personaBuscada.getNombres() : nuevosNombres;
+                   
+                    Console.WriteLine("Ingrese los nuevos Apellidos de la persona:");
+                    string nuevosApellidos = Console.ReadLine();
+                    nuevosApellidos = nuevosApellidos == "" ? personaBuscada.getApellidos() : nuevosApellidos;
+                   
+                    Console.WriteLine("Ingrese el nuevo año de nacimiento de la persona:");
+                    string anioNacimientoDt = Console.ReadLine();
+                    DateTime nuevoAnioNacimiento = anioNacimientoDt == "" ? personaBuscada.getAnioNacimiento() : Convert.ToDateTime(anioNacimientoDt);
+
+                    Console.WriteLine("Ingrese el nuevo número de identificación de la persona:");
+                    string nuevoNumeroIdentificacion = Console.ReadLine();
+                    nuevoNumeroIdentificacion = nuevoNumeroIdentificacion == "" ? personaBuscada.getNumeroIdentificacion() : nuevoNumeroIdentificacion;
+                   
+                    Console.WriteLine("Ingrese el nuevo contacto de la persona:");
+                    string nuevoContacto = Console.ReadLine();
+                    nuevoContacto = nuevoContacto == "" ? personaBuscada.getContacto().ToString() : nuevoContacto;
+
+                    //Creacion de la persona
+                    personaControl.ActualizarPersona( usuarioBuscado.getIdPersona(), nuevosNombres, nuevosApellidos, nuevoAnioNacimiento, nuevoNumeroIdentificacion, Convert.ToInt32(nuevoContacto));
                     
                     Usuario usuarioActualizar = new Usuario();
                     usuarioActualizar.setUsuario(nuevoUsuario);
-                    usuarioActualizar.setIdPersona(nuevoIdPersona);
-                    usuarioActualizar.setIdRol(nuevoIdRol);
                     usuarioControl.ActualizarUsuario(usuarioActualizar, idActualizar);
                     break;
                 case "5":
                     //Sin Probar
                     Console.WriteLine("Ingrese el ID del usuario que desea eliminar:");
                     int idEliminar = Convert.ToInt32(Console.ReadLine());
-                    usuarioControl.EliminarUsuario(idEliminar);
+                    //preguntar si está seguro de eliminar
+                    Console.WriteLine("¿Está seguro de eliminar el usuario? (S/N)");
+                    string confirmacion = Console.ReadLine();
+                    if(confirmacion == "S" || confirmacion == "s"){
+                        //Buscar el usuario
+                        Usuario usuarioEliminar = usuarioControl.buscarUsuario(idEliminar);
+                        usuarioControl.EliminarUsuario(idEliminar);
+                        personaControl.EliminarPersona(usuarioEliminar.getIdPersona());
+                    }else{
+                        Console.WriteLine("No se eliminó el usuario");
+                    }
+
+                    
                     break;
                 case "6":
                     Console.WriteLine("Saliendo del programa...");

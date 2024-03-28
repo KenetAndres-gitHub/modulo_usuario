@@ -78,6 +78,7 @@ public class PersonaControlador
             MySqlCommand command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@NumeroIdentificacion", numeroIdentificacion);
             MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
             int idPersona = reader.GetInt32(0);
             reader.Close(); connection.Close();
             return idPersona;
@@ -169,7 +170,7 @@ public class PersonaControlador
         }
     }
 
-    public void ActualizarPersona(Persona persona, int idPersona)
+    public void ActualizarPersona(int id, string nombres, string apellidos,DateTime anioNacimiento,string numeroIdentificacion,int contacto)
     {
         try
         {
@@ -177,14 +178,14 @@ public class PersonaControlador
             connection.Open();
             string query = "UPDATE persona SET Nombres = @Nombres, Apellidos = @Apellidos, AnioNacimiento = @AnioNacimiento, NumeroIdentificacion = @NumeroIdentificacion, Contacto = @Contacto WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, connection);
-            command.Parameters.AddWithValue("@Nombres", persona.getNombres());
-            command.Parameters.AddWithValue("@Apellidos", persona.getApellidos());
-            command.Parameters.AddWithValue("@AnioNacimiento", persona.getAnioNacimiento());
-            command.Parameters.AddWithValue("@NumeroIdentificacion", persona.getNumeroIdentificacion());
-            command.Parameters.AddWithValue("@Contacto", persona.getContacto());
-            command.Parameters.AddWithValue("@id", idPersona);
+            command.Parameters.AddWithValue("@id", id);
+            command.Parameters.AddWithValue("@Nombres", nombres);
+            command.Parameters.AddWithValue("@Apellidos", apellidos);
+            command.Parameters.AddWithValue("@AnioNacimiento", anioNacimiento);
+            command.Parameters.AddWithValue("@NumeroIdentificacion", numeroIdentificacion);
+            command.Parameters.AddWithValue("@Contacto", contacto);
             command.ExecuteNonQuery();
-            Console.WriteLine($"Persona actualizada: {persona.getNombres()} {persona.getApellidos()}");
+            Console.WriteLine("Persona actualizada");
             connection.Close();
         }
         catch (Exception ex)
@@ -215,7 +216,7 @@ public class PersonaControlador
             MySqlCommand command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@id", idPersona);
             command.ExecuteNonQuery();
-            Console.WriteLine($"Persona eliminada con ID: {idPersona}");
+            Console.WriteLine($"Persona eliminada con ID: {idPersona}, correctamente");
             connection.Close();
         }
         catch (Exception ex)
