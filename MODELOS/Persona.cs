@@ -14,7 +14,10 @@ public class Persona
     public int getId(){
         return this.id;
     }
-
+    public void setId(int id){
+        this.id = id;
+    }
+    
     //Funcion para setear el nombre de la persona
     public void setNombres(string nombres){
         this.nombres = nombres;

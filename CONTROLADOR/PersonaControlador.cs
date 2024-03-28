@@ -12,16 +12,60 @@ public class PersonaControlador
     {
         conexion = Conexion.getInstancia();
     }
-    
-    public bool setPersona(string nombres, string apellidos, DateTime anioNacimiento, string numeroIdentificacion, int contacto)
+
+    public Persona buscarPersona(int idPersona)
     {
-        Persona persona = new Persona();
-        persona.setNombres(nombres);
-        persona.setApellidos(apellidos);
-        persona.setAnioNacimiento(anioNacimiento);
-        persona.setNumeroIdentificacion(numeroIdentificacion);
-        persona.setContacto(contacto);
-        return this.CrearPersona(persona);
+        try
+        {
+            MySqlConnection connection = conexion.CrearConexion();
+            connection.Open();
+            string query = "SELECT * FROM persona WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id", idPersona);
+            MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+            Persona persona = new Persona();
+            persona.setNombres(reader.GetString(1));
+            persona.setApellidos(reader.GetString(2));
+            persona.setAnioNacimiento(reader.GetDateTime(3));
+            persona.setNumeroIdentificacion(reader.GetString(4));
+            persona.setContacto(reader.GetInt32(5));
+            reader.Close();
+            connection.Close();
+            return persona;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al buscar la persona: {ex.Message}");
+            return null;
+        }
+    }
+
+    public Persona buscarPersonaPorNumeroIdentificacion(string numeroIdentificacion, MySqlConnection connection)
+    {
+        try
+        {
+            connection.Open();
+            string query = "SELECT * FROM persona WHERE NumeroIdentificacion = @NumeroIdentificacion";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@NumeroIdentificacion", numeroIdentificacion);
+            MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+            Persona persona = new Persona();
+            persona.setId(reader.GetInt32(0));
+            persona.setNombres(reader.GetString(1));
+            persona.setApellidos(reader.GetString(2));
+            persona.setAnioNacimiento(reader.GetDateTime(3));
+            persona.setNumeroIdentificacion(reader.GetString(4));
+            persona.setContacto(reader.GetInt32(5));
+            reader.Close();connection.Close();
+            return persona;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al buscar la persona: {ex.Message}");
+            return null;
+        }
     }
 
     public int getPersonaId(string numeroIdentificacion)
@@ -34,10 +78,8 @@ public class PersonaControlador
             MySqlCommand command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@NumeroIdentificacion", numeroIdentificacion);
             MySqlDataReader reader = command.ExecuteReader();
-            reader.Read();
             int idPersona = reader.GetInt32(0);
-            reader.Close();
-            connection.Close();
+            reader.Close(); connection.Close();
             return idPersona;
         }
         catch (Exception ex)
@@ -45,6 +87,18 @@ public class PersonaControlador
             Console.WriteLine($"Error al obtener el ID de la persona: {ex.Message}");
             return 0;
         }
+    }
+
+    
+    public bool setPersona(string nombres, string apellidos, DateTime anioNacimiento, string numeroIdentificacion, int contacto)
+    {
+        Persona persona = new Persona();
+        persona.setNombres(nombres);
+        persona.setApellidos(apellidos);
+        persona.setAnioNacimiento(anioNacimiento);
+        persona.setNumeroIdentificacion(numeroIdentificacion);
+        persona.setContacto(contacto);
+        return this.CrearPersona(persona);
     }
 
     public bool CrearPersona(Persona persona)

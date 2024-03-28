@@ -1,5 +1,6 @@
 using Biblioteca.DATOS;
 using MySql.Data.MySqlClient;
+using proyecto.MODELOS;
 
 namespace proyecto.CONTROLADOR;
 public class UsuarioControlador
@@ -26,7 +27,7 @@ public class UsuarioControlador
             Console.WriteLine($"Usuario creado: {usuario.getUsuario()}");
             connection.Close();
         }
-        catch (Exception ex)
+        catch (MySqlException ex)
         {
             Console.WriteLine($"Error al crear el usuario: {ex.Message}");
         }
@@ -34,8 +35,9 @@ public class UsuarioControlador
 
     public void LeerUsuarios()
     {
-        try
-        {
+        PersonaControlador personaControlador = new PersonaControlador();
+        RolControlador rolControlador = new RolControlador();
+        try{
             MySqlConnection connection = conexion.CrearConexion();
             connection.Open();
             string query = "SELECT * FROM usuario";
@@ -43,17 +45,40 @@ public class UsuarioControlador
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Console.WriteLine($"ID: {reader.GetInt32(0)}, Usuario: {reader.GetString(1)}, IdPersona: {reader.GetInt32(2)}, IdRol: {reader.GetInt32(3)}");
+                Persona persona = personaControlador.buscarPersona(reader.GetInt32(2));
+                Rol rol = rolControlador.buscarRol(reader.GetInt32(3));
+                Console.WriteLine($"ID: {reader.GetInt32(0)}, Usuario: {reader.GetString(1)}, Nombres y Apellidos: {persona.getNombres()} {persona.getApellidos()}, Rol: {rol.getNombre()}");
             }
             reader.Close();
             connection.Close();
-        }
-        catch (Exception ex)
-        {
+        }catch (Exception ex){
             Console.WriteLine($"Error al leer los usuarios: {ex.Message}");
         }
     }
 
+    public void BuscarUsuarioPorNumeroIdentificacion(string numeroIdentificacion)
+    {
+        MySqlConnection connection = conexion.CrearConexion();
+        //Buscar la persona por el numero de identificacion
+        PersonaControlador personaControlador = new PersonaControlador();
+        Persona persona = personaControlador.buscarPersonaPorNumeroIdentificacion(numeroIdentificacion, connection);
+        if (persona == null){
+            Console.WriteLine("No se encontró la persona");
+        }
+        Console.WriteLine($"Persona encontrada: {persona.getNombres()} {persona.getApellidos()} con ID: {persona.getId()}");
+        connection.Open();
+        string query = "SELECT * FROM usuario WHERE idPersona = @IdPersona";
+        MySqlCommand command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@IdPersona", persona.getId());
+        MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            RolControlador rolControlador = new RolControlador();
+            Rol rol = rolControlador.buscarRol(reader.GetInt32(3));
+            Console.WriteLine($"ID: {reader.GetInt32(0)}, Usuario: {reader.GetString(1)}, Nombres y Apellidos: {persona.getNombres()} {persona.getApellidos()}, Rol: {rol.getNombre()}");
+            //Reservas
+        }       
+    }
     public void ActualizarUsuario(Usuario usuario, int idUsuario)
     {
         try

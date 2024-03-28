@@ -14,6 +14,27 @@ public class RolControlador
         conexion = Conexion.getInstancia();
     }
 
+    public Rol buscarRol(int idRol)
+    {
+        try{
+            MySqlConnection connection = conexion.CrearConexion();
+            connection.Open();
+            string query = "SELECT * FROM rol WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id", idRol);
+            MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+            Rol rol = new Rol();
+            rol.setNombre(reader.GetString(1));
+            rol.setDescripcion(reader.GetString(2));
+            reader.Close();
+            connection.Close();
+            return rol;
+        }catch (Exception ex){
+            Console.WriteLine($"Error al buscar el rol: {ex.Message}");
+            return null;
+        }
+    }
     public void CrearRol(Rol rol)
     {
         try

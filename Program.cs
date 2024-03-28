@@ -133,9 +133,10 @@ class Program
             Console.WriteLine("Menú de opciones:");
             Console.WriteLine("1. Crear Usuario");
             Console.WriteLine("2. Leer Usuarios");
-            Console.WriteLine("3. Actualizar Usuario");
-            Console.WriteLine("4. Eliminar Usuario");
-            Console.WriteLine("5. Salir");
+            Console.WriteLine("3. Buscar Usuario por Numero de Identificación");
+            Console.WriteLine("4. Actualizar Usuario");
+            Console.WriteLine("5. Eliminar Usuario");
+            Console.WriteLine("6. Salir");
             Console.Write("Ingrese el número de la opción deseada: ");
 
             string opcion = Console.ReadLine();
@@ -183,30 +184,36 @@ class Program
                     usuarioControl.LeerUsuarios();
                     break;
                 case "3":
-                    //Sin Probar
+                    //Buscar usuario por numero de identificacion
+                    Console.WriteLine("Ingrese el numero de identificacion del usuario que desea buscar:");
+                    string numeroIdentificacionBuscar = Console.ReadLine();
+                    usuarioControl.BuscarUsuarioPorNumeroIdentificacion(numeroIdentificacionBuscar);
 
+                    break;
+                case "4":
+                    //Sin Probar
                     Console.WriteLine("Ingrese el ID del usuario que desea actualizar:");
                     int idActualizar = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("Ingrese el nuevo usuario:");
+                    Console.WriteLine("Ingrese el nuevo username del usuario:");
                     string nuevoUsuario = Console.ReadLine();
-                    Console.WriteLine("Ingrese el nuevo ID de la persona:");
+                    Console.WriteLine("Ingrese el nuevo ID de la persona del usuario:");
                     int nuevoIdPersona = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("Ingrese el nuevo ID del rol:");
+                    Console.WriteLine("Ingrese el nuevo ID del rol del usuario:");
                     int nuevoIdRol = Convert.ToInt32(Console.ReadLine());
-
+                    
                     Usuario usuarioActualizar = new Usuario();
                     usuarioActualizar.setUsuario(nuevoUsuario);
                     usuarioActualizar.setIdPersona(nuevoIdPersona);
                     usuarioActualizar.setIdRol(nuevoIdRol);
                     usuarioControl.ActualizarUsuario(usuarioActualizar, idActualizar);
                     break;
-                case "4":
+                case "5":
                     //Sin Probar
                     Console.WriteLine("Ingrese el ID del usuario que desea eliminar:");
                     int idEliminar = Convert.ToInt32(Console.ReadLine());
                     usuarioControl.EliminarUsuario(idEliminar);
                     break;
-                case "5":
+                case "6":
                     Console.WriteLine("Saliendo del programa...");
                     return;
                 default:
